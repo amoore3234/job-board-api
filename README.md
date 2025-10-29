@@ -56,5 +56,7 @@ This project uses a web scraping mechanism to fetch job listings from external j
     - `uvicorn main:app --reload`
 3. Making queries against postgres container
   - Once you spin up the application, if you need to run queries against the database, you can use the command below to access bash
-    - `docker exec -it <container_name_or_id> /bin/bash `
+    - `docker exec -it <container_name_or_id> /bin/bash`
+  - Once you are able to interact with the container, then you can run queries against the db. Run the command below to access the db by entering your postgres user name and datbase name.
+    - `psql -U your_username -d your_database_name`
 
