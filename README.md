@@ -48,15 +48,16 @@ This project uses a web scraping mechanism to fetch job listings from external j
       - `deactivate`
 
 # Getting Started
-1. Running the application
+1. The `env_template` file contains default variables to store your datbase credentials and other sensitive data. Create a `.env` file in your project and copy the environment variables from the template and store them into the new config file. Ensure the file is reference in `.gitignore`.
+  - For the `POSTGRES_DATABASE_URL` environment variable, you may run into issues connecting to the database. If so, ensure that the host name in the url string points to the postgresql container. Ex: `postgresql://[user]:[password]@[container name]/[database]`
+2. Running the application
   - Start and build the application with the required docker command
-    - `docker compose -f docker/docker-compose.yml up --build`
-2. Running the server locally
+    - `docker compose --env-file .env -f docker/docker-compose.yml up --build -d`
+3. Running the server locally
   - If you want to run the server locally to send API requests, you can use the command below and replace "main" with the name of your file that you want to run.
     - `uvicorn main:app --reload`
-3. Making queries against postgres container
+4. Making queries against postgres container
   - Once you spin up the application, if you need to run queries against the database, you can use the command below to access bash
     - `docker exec -it <container_name_or_id> /bin/bash`
   - Once you are able to interact with the container, then you can run queries against the db. Run the command below to access the db by entering your postgres user name and datbase name.
     - `psql -U your_username -d your_database_name`
-

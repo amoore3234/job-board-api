@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS postings (
   id SERIAL PRIMARY KEY,
-  jobTitle VARCHAR(100),
-  jobUrl VARCHAR(255),
-  companyLogo VARCHAR(255),
-  companyTitle VARCHAR(100),
-  companyAddress VARCHAR(255),
-  companySalary VARCHAR(100),
-  companyMetadata VARCHAR(255),
-  datePosted VARCHAR(50)
+  job_title VARCHAR(100),
+  job_url VARCHAR(255),
+  company_logo VARCHAR(255),
+  company_title VARCHAR(100),
+  company_address VARCHAR(255),
+  company_salary VARCHAR(100),
+  company_metadata VARCHAR(255),
+  date_posted VARCHAR(50)
 );

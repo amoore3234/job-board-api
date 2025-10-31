@@ -1,3 +1,5 @@
+from dao.job_board_repository import JobBoardRepository
+from model.job_posting import JobPosting
 from model.person import Person
 from model.vehicle import Vehicle
 
@@ -44,4 +46,17 @@ print (f"Updated number of wheels: {sonic_lt_turbo.number_of_wheels}")
 my_person = Person()
 my_person.set_name("Alice")
 print(f"Person's name: {my_person.get_name()}")
+
+job_posting = JobPosting(
+    job_title="Frontend Engineer",
+    job_url="https://example.com/jobs/1",
+    company_logo="https://example.com/logo.png",
+    company_address="11523 Newport Blvd, Newport Beach, USA",
+    company_salary="$200,000",
+    company_metadata=["Python", "React", "Java"],
+    date_posted="2025-07-15"
+)
+
+repository = JobBoardRepository()
+repository.add_job_posting(job_posting)
 
