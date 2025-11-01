@@ -31,5 +31,4 @@ RUN pip3 install -r requirements.txt
 EXPOSE 5000 5432
 
 # Define the command to run your application
-# CMD ["uvicorn", "app:app", "--reload", "--host", "0.0.0.0", "--port", "5000"]
-CMD ["python3", "sandbox.py"]
+CMD ["uvicorn", "app:app", "--reload", "--host", "0.0.0.0", "--port", "5000"]

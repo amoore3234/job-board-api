@@ -1,5 +1,5 @@
 from dao.job_board_repository import JobBoardRepository
-from model.job_posting import JobPosting
+from mapping_model.job_posting_mapping import JobPostingMapping as JobPosting
 from model.person import Person
 from model.vehicle import Vehicle
 
@@ -48,15 +48,20 @@ my_person.set_name("Alice")
 print(f"Person's name: {my_person.get_name()}")
 
 job_posting = JobPosting(
-    job_title="Frontend Engineer",
+    job_title="Senior Software Engineer",
     job_url="https://example.com/jobs/1",
     company_logo="https://example.com/logo.png",
-    company_address="11523 Newport Blvd, Newport Beach, USA",
-    company_salary="$200,000",
+    company_address="13423 Valley Blvd, Newport Beach, USA",
+    company_salary="$250,000",
     company_metadata=["Python", "React", "Java"],
     date_posted="2025-07-15"
 )
-
+items = []
 repository = JobBoardRepository()
 repository.add_job_posting(job_posting)
+
+postings = repository.get_all_job_postings()
+
+for posting in postings:
+    print(f"All job postings: {posting}")
 
