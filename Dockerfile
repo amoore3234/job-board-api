@@ -28,7 +28,7 @@ COPY ./ /api
 RUN pip3 install -r requirements.txt
 
 # Expose the port your application listens on
-EXPOSE 5000 5432
+EXPOSE 5000 5432 8080
 
 # Define the command to run your application
 CMD ["uvicorn", "app:app", "--reload", "--host", "0.0.0.0", "--port", "5000"]

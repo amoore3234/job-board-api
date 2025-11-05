@@ -14,15 +14,17 @@ Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 class JobPostingDao:
 
-    def add_job_posting(self, job_posting) -> None:
+    def add_job_posting(self, job_posting) -> JobPosting:
         with Session() as session:
             session.add(job_posting)
             session.commit()
+            return job_posting
 
-    def add_job_postings(self, job_postings) -> None:
+    def add_job_postings(self, job_postings) -> list[JobPosting]:
         with Session() as session:
             session.add_all(job_postings)
             session.commit()
+            return job_postings
 
     def get_job_posting_by_id(self, job_id) -> JobPosting:
         with Session() as session:

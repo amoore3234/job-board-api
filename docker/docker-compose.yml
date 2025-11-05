@@ -12,6 +12,7 @@ services:
       PYTHONUNBUFFERED: 1
     networks:
       - postgres-network
+      - keycloak-network
   postgres:
     image: postgres:latest
     environment:
@@ -26,7 +27,18 @@ services:
     restart: always
     networks:
       - postgres-network
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    command: ["start-dev"]
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres-network
 networks:
   postgres-network:
+  keycloak-network:
 volumes:
   pgdata:

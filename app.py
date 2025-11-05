@@ -1,65 +1,47 @@
 from model.job_posting_request import JobPostingRequest
 from model.job_posting_response import JobPostingResponse
 from service.job_posting_service import JobPostingService
-from fastapi import FastAPI, HTTPException
-from mapping_model.job_posting_mapping import JobPostingMapping
+from fastapi import Depends, FastAPI, HTTPException, status
+from config.auth import RoleRequired, get_current_user
+from fastapi import Request
+from fastapi.openapi.docs import get_swagger_ui_html
 
 app = FastAPI()
 
-@app.post("/posting",
+@app.post("/api/posting",
           response_model=JobPostingResponse,
           summary="Create a new job posting",
-          description="Create job posting to store in the database.")
+          description="Create job posting to store in the database.",
+          dependencies=[Depends(RoleRequired("admin"))])
 async def create_job(posting: JobPostingRequest):
-
-    job_posting = JobPostingMapping(
-        job_title=posting.job_title,
-        job_url=posting.job_url,
-        company_logo=posting.company_logo,
-        company_address=posting.company_address,
-        company_salary=posting.company_salary,
-        company_metadata=posting.company_metadata,
-        date_posted=posting.date_posted
-    )
-
     service = JobPostingService()
-    service.create_job_posting(job_posting)
+    service.create_job_posting(posting)
     return posting
 
-@app.post("/add_postings",
+@app.post("/api/add_postings",
           response_model=list[JobPostingResponse],
           summary="Create multiple job postings",
-          description="Create multiple job postings to store in the database.")
+          description="Create multiple job postings to store in the database.",
+          dependencies=[Depends(RoleRequired("admin"))])
 async def create_jobs(postings: list[JobPostingRequest]):
-    job_mappings = []
-    for posting in postings:
-        job_posting = JobPostingMapping(
-            job_title=posting.job_title,
-            job_url=posting.job_url,
-            company_logo=posting.company_logo,
-            company_address=posting.company_address,
-            company_salary=posting.company_salary,
-            company_metadata=posting.company_metadata,
-            date_posted=posting.date_posted
-        )
-        job_mappings.append(job_posting)
-
     service = JobPostingService()
-    service.create_job_postings(job_mappings)
+    service.create_job_postings(postings)
     return postings
 
-@app.get("/postings",
+@app.get("/api/postings",
          response_model=list[JobPostingResponse],
          summary="Get all job postings",
-         description="Retrieve all job postings from the database.")
+         description="Retrieve all job postings from the database.",
+         dependencies=[Depends(get_current_user)])
 async def get_all_jobs():
     service = JobPostingService()
     return service.get_job_postings()
 
-@app.get("/posting/{job_id}",
+@app.get("/api/posting/{job_id}",
          response_model=JobPostingResponse,
          summary="Get a job posting by ID",
-         description="Retrieve a specific job posting using its ID.")
+         description="Retrieve a specific job posting using its ID.",
+         dependencies=[Depends(get_current_user)])
 async def get_job_by_id(job_id: int):
     service = JobPostingService()
     job = service.get_job_posting_by_id(job_id)
@@ -68,9 +50,11 @@ async def get_job_by_id(job_id: int):
     else:
         raise HTTPException(status_code=404, detail="Job posting {job_id} not found")
 
-@app.delete("/posting/{job_id}",
+@app.delete("/api/posting/{job_id}",
+            status_code=status.HTTP_204_NO_CONTENT,
             summary="Delete a job posting by ID",
-            description="Delete a specific job posting using its ID.")
+            description="Delete a specific job posting using its ID.",
+            dependencies=[Depends(RoleRequired("admin"))])
 async def delete_job(job_id: int):
     service = JobPostingService()
     service.delete_job_posting(job_id)

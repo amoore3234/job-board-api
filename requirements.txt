@@ -6,3 +6,10 @@ psycopg2-binary
 pydantic
 pytest
 testcontainers[postgresql]
+fastapi_keycloak_middleware
+starlette
+itsdangerous
+PyJWT
+requests
+python-jose[cryptography]
+httpx
