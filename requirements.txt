@@ -13,3 +13,5 @@ PyJWT
 requests
 python-jose[cryptography]
 httpx
+playwright
+asyncpg

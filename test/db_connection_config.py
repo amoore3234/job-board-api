@@ -1,13 +1,12 @@
 import os
-import psycopg2
-from psycopg2 import pool
+import asyncpg
 
-def get_db_connection():
+async def get_db_connection():
   postgresql_connection_pool = None
   try:
-    postgresql_connection_pool = pool.SimpleConnectionPool(
-          1,
-          10,
+    postgresql_connection_pool = await asyncpg.create_pool(
+          min_size=1,
+          max_size=10,
           user=os.getenv("POSTGRES_USER_TEST"),
           password=os.getenv("POSTGRES_PASSWORD_TEST"),
           host=os.getenv("POSTGRES_HOST_TEST"),
@@ -16,5 +15,5 @@ def get_db_connection():
         )
     print("Connection pool created successfully")
     return postgresql_connection_pool
-  except (Exception, psycopg2.DatabaseError) as error:
+  except Exception as error:
       print("Error while connecting to PostgreSQL:", error)

@@ -3,8 +3,6 @@ from model.job_posting_response import JobPostingResponse
 from service.job_posting_service import JobPostingService
 from fastapi import Depends, FastAPI, HTTPException, status
 from config.auth import RoleRequired, get_current_user
-from fastapi import Request
-from fastapi.openapi.docs import get_swagger_ui_html
 
 app = FastAPI()
 
@@ -20,13 +18,22 @@ async def create_job(posting: JobPostingRequest):
 
 @app.post("/api/add_postings",
           response_model=list[JobPostingResponse],
-          summary="Create multiple job postings",
+          summary="Create and save multiple job postings",
           description="Create multiple job postings to store in the database.",
           dependencies=[Depends(RoleRequired("admin"))])
 async def create_jobs(postings: list[JobPostingRequest]):
     service = JobPostingService()
     service.create_job_postings(postings)
     return postings
+
+@app.post("/api/job_postings",
+          summary="Create and save multiple job postings",
+          description="Retrieve job postings from the Dice job board",
+          dependencies=[Depends(get_current_user)])
+async def create_dice_jobs():
+    service = JobPostingService()
+    await service.delete_job_postings()
+    await service.create_dice_postings()
 
 @app.get("/api/postings",
          response_model=list[JobPostingResponse],
@@ -35,7 +42,7 @@ async def create_jobs(postings: list[JobPostingRequest]):
          dependencies=[Depends(get_current_user)])
 async def get_all_jobs():
     service = JobPostingService()
-    return service.get_job_postings()
+    return await service.get_job_postings()
 
 @app.get("/api/posting/{job_id}",
          response_model=JobPostingResponse,

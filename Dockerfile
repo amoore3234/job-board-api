@@ -1,19 +1,8 @@
-# Use an official Ubuntu base image
-FROM ubuntu:latest
+# Use an official Python base image
+FROM python:3.12-slim
 
 # Set the working directory inside the container
 WORKDIR /api
-
-# Update package lists and install Python and pip
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install the virtual environment package
-RUN apt-get update && apt-get install -y python3.12-venv
-
-# Install Uvicorn
-RUN apt install -y uvicorn
 
 # Create virtual environment
 RUN python3 -m venv /opt/.venv
@@ -26,6 +15,9 @@ COPY ./ /api
 
 # Install Python dependencies
 RUN pip3 install -r requirements.txt
+
+#Install chrome for web scraping
+RUN playwright install chrome
 
 # Expose the port your application listens on
 EXPOSE 5000 5432 8080

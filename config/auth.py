@@ -8,9 +8,9 @@ from jose.exceptions import JWTError
 
 KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
 KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
-KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID_API")
 
-JWKS_URL = f"http://docker-keycloak-1:8080/realms/{KEYCLOAK_REALM}/protocol/openid-connect/certs"
+JWKS_URL = f"http://keycloak:8080/realms/{KEYCLOAK_REALM}/protocol/openid-connect/certs"
 
 oauth2_schema = OAuth2AuthorizationCodeBearer(
     authorizationUrl=f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/auth",
@@ -29,6 +29,7 @@ async def validate_token(token: str = Depends(oauth2_schema)):
             jwks = response.json()
             print(f"JWKS fetched successfully: {jwks}")
 
+        print(f"Token received: {token}")
         # Decode the token headers to get the key ID (kid)
         headers = jwt.get_unverified_headers(token)
         kid = headers.get("kid")

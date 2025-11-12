@@ -12,6 +12,7 @@ class JobPostingMapping(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     job_title: Mapped[str] = mapped_column(String(100))
     job_url: Mapped[str] = mapped_column(String(255))
+    company_name: Mapped[str] = mapped_column(String(255))
     company_logo: Mapped[str] = mapped_column(String(255))
     company_address: Mapped[str] = mapped_column(String(255))
     company_salary: Mapped[str] = mapped_column(String(50))

@@ -1,6 +1,5 @@
 from test.db_connection_config import get_db_connection
 from test.model.job_posting import JobPosting
-import psycopg2
 
 def create_table():
   connect = None
@@ -23,7 +22,7 @@ def create_table():
     """)
     connect.commit()
     print("Table created successfully")
-  except (Exception, psycopg2.DatabaseError) as error:
+  except Exception as error:
     print(f"Error creating table: {error}")
   finally:
     if cursor:
@@ -43,7 +42,7 @@ def create_job_posting(job_title, job_url, company_logo, company_address, compan
     """, (job_title, job_url, company_logo, company_address, company_salary, company_metadata, date_posted))
     connect.commit()
     print("Job posting created successfully")
-  except (Exception, psycopg2.DatabaseError) as error:
+  except Exception as error:
     print(f"Error adding job posting: {error}")
   finally:
     if cursor:
@@ -60,7 +59,7 @@ def get_all_job_postings() -> list[JobPosting]:
     cursor.execute("SELECT * FROM job_postings")
     print("Successfully fetched all job postings.")
     return cursor.fetchall()
-  except (Exception, psycopg2.DatabaseError) as error:
+  except Exception as error:
     print(f"Error fetching job postings: {error}")
   finally:
     if cursor:
@@ -77,7 +76,7 @@ def get_job_posting_by_id(job_id) -> JobPosting:
       cursor.execute("SELECT * FROM job_postings WHERE id = %s", (job_id,))
       print(f"Successfully fetched job posting with ID {job_id}.")
       return cursor.fetchone()
-    except (Exception, psycopg2.DatabaseError) as error:
+    except Exception as error:
       print(f"Error fetching job posting by ID: {error}")
     finally:
       if cursor:
