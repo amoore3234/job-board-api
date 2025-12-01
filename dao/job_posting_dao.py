@@ -9,7 +9,7 @@ from mapping_model.job_posting_mapping import JobPostingMapping as JobPosting
 
 load_dotenv()
 
-database_url = os.getenv("POSTGRES_DATABASE_URL")
+database_url = os.getenv("JOB_BOARD_POSTGRES_DATABASE_URL")
 
 engine = create_async_engine(database_url, echo=True)
 AsyncSessionLocal = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)

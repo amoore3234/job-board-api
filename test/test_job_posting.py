@@ -15,12 +15,12 @@ def setup(request):
         postgres.stop()
 
     request.addfinalizer(remove_container)
-    os.environ["POSTGRES_DATABASE_URL_TEST"] = postgres.get_connection_url()
-    os.environ["POSTGRES_HOST_TEST"] = postgres.get_container_host_ip()
-    os.environ["POSTGRES_PORT_TEST"] = str(postgres.get_exposed_port(5432))
-    os.environ["POSTGRES_USER_TEST"] = postgres.username
-    os.environ["POSTGRES_PASSWORD_TEST"] = postgres.password
-    os.environ["POSTGRES_DB_TEST"] = postgres.dbname
+    os.environ["JOB_BOARD_POSTGRES_DATABASE_URL_TEST"] = postgres.get_connection_url()
+    os.environ["JOB_BOARD_POSTGRES_HOST_TEST"] = postgres.get_container_host_ip()
+    os.environ["JOB_BOARD_POSTGRES_PORT_TEST"] = str(postgres.get_exposed_port(5432))
+    os.environ["JOB_BOARD_POSTGRES_USER_TEST"] = postgres.username
+    os.environ["JOB_BOARD_POSTGRES_PASSWORD_TEST"] = postgres.password
+    os.environ["JOB_BOARD_POSTGRES_DB_TEST"] = postgres.dbname
     create_table()
 
 

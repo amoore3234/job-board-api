@@ -13,15 +13,15 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
     networks:
-      - postgres-network
-      - keycloak-network
+      - job-board-postgres-network
+      - job-board-keycloak-network
   job-board-api-postgres:
     container_name: job-board-api-postgres
     image: postgres:latest
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${JOB_BOARD_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${JOB_BOARD_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${JOB_BOARD_POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -29,24 +29,46 @@ services:
       - pgdata:/var/lib/postgresql
     restart: always
     networks:
-      - postgres-network
-  keycloak:
-    container_name: keycloak
+      - job-board-postgres-network
+  job-board-keycloak-postgres:
+    image: postgres:latest
+    container_name: job-board-keycloak-postgres
+    environment:
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_DB: ${KEYCLOAK_DB}
+    ports:
+      - "5435:5432"
+    volumes:
+      - job_board_keycloak_data:/var/keycloak/data
+    restart: always
+    networks:
+      - job-board-keycloak-network
+  job-board-keycloak:
+    container_name: job-board-keycloak
     image: quay.io/keycloak/keycloak:latest
     environment:
+      KC_DB: postgres
+      KC_DB_URL: ${KEYCLOAK_DB_URL}
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8081
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_LOG_LEVEL: info
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     command: ["start-dev"]
     ports:
       - "8081:8080"
-    volumes:
-      - keycloak_data:/var/keycloak/data
+    depends_on:
+      - job-board-api-postgres
     networks:
-      - postgres-network
+      - job-board-keycloak-network
+      - job-board-postgres-network
 networks:
-  postgres-network:
-  keycloak-network:
+  job-board-postgres-network:
+  job-board-keycloak-network:
 volumes:
   pgdata:
   playwright_data:
-  keycloak_data:
+  job_board_keycloak_data:
