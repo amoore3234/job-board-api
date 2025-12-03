@@ -12,6 +12,10 @@ services:
       - job-board-api-postgres
     environment:
       PYTHONUNBUFFERED: 1
+      JOB_BOARD_POSTGRES_DATABASE_URL: ${JOB_BOARD_POSTGRES_DATABASE_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID_API: ${KEYCLOAK_CLIENT_ID_API}
     networks:
       - job-board-postgres-network
       - job-board-keycloak-network
@@ -50,8 +54,6 @@ services:
     environment:
       KC_DB: postgres
       KC_DB_URL: ${KEYCLOAK_DB_URL}
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8081
       KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       KC_LOG_LEVEL: info
