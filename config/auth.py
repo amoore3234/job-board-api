@@ -7,11 +7,11 @@ from jose import jwt, jwk
 from jose.exceptions import JWTError
 
 KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
+KEYCLOAK_URL_DEFAULT= os.getenv("KEYCLOAK_URL_DEFAULT")
 KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM")
 KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
-KEYCLOAK_URL_DEFAULT = os.getenv("KEYCLOAK_URL_DEFAULT")
-
-JWKS_URL = f"{KEYCLOAK_URL_DEFAULT}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/certs"
+ISSUER_URL = f"{KEYCLOAK_URL_DEFAULT}/realms/{KEYCLOAK_REALM}"
+JWKS_URL = f"{ISSUER_URL}/protocol/openid-connect/certs"
 
 oauth2_schema = OAuth2AuthorizationCodeBearer(
     authorizationUrl=f"{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/auth",
@@ -24,6 +24,7 @@ async def validate_token(token: str = Depends(oauth2_schema)):
         return None
     try:
         print(f"Token received: {token}")
+        # Fetch JWKS
         async with httpx.AsyncClient() as client:
             response = await client.get(JWKS_URL)
             response.raise_for_status()
