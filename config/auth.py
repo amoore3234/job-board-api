@@ -27,7 +27,7 @@ async def validate_token(token: str = Depends(oauth2_schema)):
         # Fetch JWKS
         async with httpx.AsyncClient() as client:
             response = await client.get(JWKS_URL)
-            response.raise_for_status()
+            
             jwks = response.json()
             print(f"JWKS fetched successfully: {jwks}")
 
