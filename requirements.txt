@@ -15,4 +15,3 @@ python-jose[cryptography]
 httpx
 playwright
 asyncpg
-mymupdf
