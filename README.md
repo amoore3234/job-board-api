@@ -48,7 +48,7 @@ This project uses a web scraping mechanism to fetch job listings from external j
     - Activate the virtural environment
       - `source my_env/bin/activate`
     - Since the virtual environment is now activated, install the required packages for your environment.
-      - `pip3 install package_name` or `pip3 install -r requirements`
+      - `pip3 install package_name` or `pip3 install -r requirements.txt`
     - Deactivate the virtual environment when finished.
       - `deactivate`
   - **Windows(PowerShell):**
@@ -56,7 +56,7 @@ This project uses a web scraping mechanism to fetch job listings from external j
     - Install the python virtual environment (if it doesn't exist). Enter `python` in the terminal and a window should appear providing instructions to install python on your machine.
       - `python`
     - Create the virtual environment
-      - `python -m venv my_env`
+      - `python -m venv my_venv`
     - Activate the virtural environment
       - `.\my_env\Scripts\Activate.ps1`
     - Since the virtual environment is now activated, install the required packages for your environment.
