@@ -116,7 +116,7 @@ def find_keyword_counts(pdf_path: str) -> str:
                 if char == " ":
                   newString += f"{keyword.replace(' ', '+')}+"
                 else:
-                newString += f"{keyword}+"
+                  newString += f"{keyword}+"
     print(f"Search query string: {newString[0: -1]}")
     return newString[0: -1]  # Remove the trailing '+'
 
