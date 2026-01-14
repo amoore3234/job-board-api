@@ -47,8 +47,8 @@ async def scrape_dice(playwright):
         item["company_metadata"].append(await easy_apply.inner_text())
       elif await employment_Type.is_visible():
         item["company_metadata"].append(await employment_Type.inner_text())
-      location = main_details.locator('[data-testid="job-card"]').first.get_by_role("main").locator("span.inline-flex p")
 
+      location = main_details.locator('[data-testid="job-card"]').first.get_by_role("main").locator("span.inline-flex p")
       if await location.is_visible():
         item["company_address"] = await location.first.inner_text()
 
@@ -73,20 +73,20 @@ async def scrape_dice(playwright):
     item["company_logo"] = ""
     item["date_posted"] = ""
 
-    company_name = page.locator('[data-cy="companyNameLink"]')
-    posted_text = page.locator('[data-cy="postedDate"] #timeAgo')
-    logo_url = page.locator("dhi-company-logo")
+    company_name = page.locator('a[data-wa-click="djv-job-company-profile-click"]')
+    posted_text = page.locator('[data-testid="job-detail-header-card"] span:has-text("Posted")')
+    logo_url = page.locator("[data-testid='job-detail-header-card'] img")
 
     if await company_name.is_visible():
       item["company_name"] = await company_name.inner_text()
 
     if await logo_url.is_visible():
-      item["company_logo"] = await logo_url.get_attribute("logo-url")
+      item["company_logo"] = await logo_url.get_attribute("src")
     else:
       print("Logo URL could not be retrieved from src or data-src.")
 
     if await posted_text.is_visible():
-      item["date_posted"] = await posted_text.inner_text()
+      item["date_posted"] = await posted_text.inner_text().replace("•", "").replace("Posted ", "").strip()
 
     items.append(item)
 
@@ -100,6 +100,7 @@ def find_keyword_counts(pdf_path: str) -> str:
     doc = fitz.open(pdf_path)
     results = {}
     newString = ""
+    max_count = 0
 
     for keyword in keywords:
         results[keyword] = 0
@@ -110,13 +111,14 @@ def find_keyword_counts(pdf_path: str) -> str:
         for keyword in keywords:
             matches = re.findall(rf"\b{re.escape(keyword.lower())}\b", text)
             results[keyword] += len(matches)
+            max_count = max(max_count, results[keyword])
 
-            if results[keyword] > 0:
-              for char in keyword:
-                if char == " ":
-                  newString += f"{keyword.replace(' ', '+')}+"
-                else:
-                  newString += f"{keyword}+"
+        for key, value in results.items():    
+          if value == max_count and max_count != 0:
+            for char in key:
+              if char == " ":
+                newString += f"{key.replace(' ', '+')}+"
+              
     print(f"Search query string: {newString[0: -1]}")
     return newString[0: -1]  # Remove the trailing '+'
 
