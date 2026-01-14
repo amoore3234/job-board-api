@@ -34,6 +34,7 @@ async def scrape_dice(playwright):
       item["company_salary"] = ""
       item["company_address"] = ""
       item["company_metadata"] = []
+      item["date_posted"] = ""
 
       company_salary = main_details.locator("#salary-label")
 
@@ -48,9 +49,11 @@ async def scrape_dice(playwright):
       elif await employment_Type.is_visible():
         item["company_metadata"].append(await employment_Type.inner_text())
 
-      location = main_details.locator('[data-testid="job-card"]').first.get_by_role("main").locator("span.inline-flex p")
+      location = main_details.locator('p:text-is("•") >> xpath=preceding::p[1]')
+      date_posted = main_details.locator('p:text-is("•") >> xpath=following::p[1]')
       if await location.is_visible():
-        item["company_address"] = await location.first.inner_text()
+        item["company_address"] = await location.inner_text()
+        item["date_posted"] = await date_posted.inner_text()
 
       jobs.append(item)
 
@@ -69,12 +72,11 @@ async def scrape_dice(playwright):
     item["company_salary"] = job["company_salary"]
     item["company_metadata"] = job["company_metadata"]
     item["company_address"] = job["company_address"]
+    item["date_posted"] = job["date_posted"]
     item["company_name"] = ""
     item["company_logo"] = ""
-    item["date_posted"] = ""
 
-    company_name = page.locator('a[data-wa-click="djv-job-company-profile-click"]')
-    posted_text = page.locator('[data-testid="job-detail-header-card"] span:has-text("Posted")')
+    company_name = page.locator('[data-testid="job-detail-header-card"] a')
     logo_url = page.locator("[data-testid='job-detail-header-card'] img")
 
     if await company_name.is_visible():
@@ -83,10 +85,7 @@ async def scrape_dice(playwright):
     if await logo_url.is_visible():
       item["company_logo"] = await logo_url.get_attribute("src")
     else:
-      print("Logo URL could not be retrieved from src or data-src.")
-
-    if await posted_text.is_visible():
-      item["date_posted"] = await posted_text.inner_text().replace("•", "").replace("Posted ", "").strip()
+      print("Logo URL could not be retrieved from src or data-src.")   
 
     items.append(item)
 
@@ -109,18 +108,17 @@ def find_keyword_counts(pdf_path: str) -> str:
         text = page.get_text().lower()
 
         for keyword in keywords:
-            matches = re.findall(rf"\b{re.escape(keyword.lower())}\b", text)
-            results[keyword] += len(matches)
-            max_count = max(max_count, results[keyword])
+            match = re.search(rf"\b{re.escape(keyword)}\b", text, re.IGNORECASE)
+            if match:
+              newString = keyword
 
-        for key, value in results.items():    
-          if value == max_count and max_count != 0:
-            for char in key:
-              if char == " ":
-                newString += f"{key.replace(' ', '+')}+"
-              
-    print(f"Search query string: {newString[0: -1]}")
-    return newString[0: -1]  # Remove the trailing '+'
+        for char in newString:
+          print(f"Character: {char}")
+          if char == ' ':
+            newString = "+".join(newString.split())
+
+    print(f"Search query string: {newString}")
+    return newString
 
 async def map_job_definition() -> list[JobPosting]:
   async with async_playwright() as playwright:
