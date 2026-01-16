@@ -4,7 +4,7 @@ import re
 from mapping_model.job_posting_mapping import JobPostingMapping as JobPosting
 from playwright.async_api import async_playwright
 
-async def scrape_dice(playwright):
+async def scrape_dice(playwright, document) -> list[dict]:
   browser = await playwright.chromium.launch_persistent_context(
     user_data_dir="/var/lib/playwright_data",
     channel="chrome",
@@ -19,7 +19,7 @@ async def scrape_dice(playwright):
   jobs = []
 
   while page_count <= 1:
-    query_string = find_keyword_counts("SoftwareEngineerKholsResume.pdf")
+    query_string = find_keyword_counts(document)
     await page.goto(f'https://www.dice.com/jobs?filters.workplaceTypes=Remote&q={query_string}&page=' + str(page_count))
     time.sleep(10)
     vacancies = await page.locator('[data-testid="job-card"]').all()
@@ -113,18 +113,16 @@ def find_keyword_counts(pdf_path: str) -> str:
               newString = keyword
 
         for char in newString:
-          print(f"Character: {char}")
           if char == ' ':
             newString = "+".join(newString.split())
 
-    print(f"Search query string: {newString}")
     return newString
 
-async def map_job_definition() -> list[JobPosting]:
+async def map_job_definition(document) -> list[JobPosting]:
   async with async_playwright() as playwright:
 
     job_board = []
-    job_board_items = await scrape_dice(playwright)
+    job_board_items = await scrape_dice(playwright, document)
 
     for dice_job in job_board_items:
       job_posting = JobPosting(
