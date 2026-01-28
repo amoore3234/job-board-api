@@ -27,7 +27,7 @@ services:
       - "5432:5432"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - pgdata:/var/lib/postgresql
+      - job_board_api_postgres_data:/var/lib/postgresql
     restart: always
     networks:
       - job-board-postgres-network
@@ -68,6 +68,6 @@ networks:
   job-board-postgres-network:
   job-board-keycloak-network:
 volumes:
-  pgdata:
+  job_board_api_postgres_data:
   playwright_data:
   job_board_keycloak_data:
